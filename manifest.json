@@ -3,7 +3,7 @@
   "name": "Find Preprint",
   "version": "0.1.0",
   "description": "On a journal article page, finds a freely available preprint version. Useful for paywalled papers.",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "activeTab"],
   "host_permissions": [
     "https://api.unpaywall.org/*",
     "https://api.crossref.org/*",

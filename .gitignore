@@ -6,4 +6,4 @@ node_modules/
 .vscode/
 .idea/
 dist/
-*.zip
+find-preprint-v*.zip

@@ -166,6 +166,23 @@ Click the extension icon, then "Settings", or right-click the icon ->
   www.ebi.ac.uk/europepmc, api.semanticscholar.org.
 - No analytics, no telemetry, no user identifier.
 
+Full policy: see [PRIVACY.md](PRIVACY.md).
+
+## Building a release
+
+To produce a Chrome Web Store upload zip:
+
+```
+./scripts/package.sh
+```
+
+This writes `find-preprint-v{version}.zip` containing only the files Chrome
+needs to run the extension. The version is read from `manifest.json`.
+
+Listing copy and permission justifications for the Web Store dashboard are
+in [STORE_LISTING.md](STORE_LISTING.md). Release notes are in
+[CHANGELOG.md](CHANGELOG.md).
+
 ## Layout
 
 ```
