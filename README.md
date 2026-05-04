@@ -57,10 +57,10 @@ Open these and watch the badge:
 
 - Paywalled, preprint exists on Research Square:
   https://www.nature.com/articles/s41593-026-02272-6
-- Open access:
+- Open access (no preprint linked):
   https://elifesciences.org/articles/76577
-- Cell paper with bioRxiv preprint:
-  https://www.cell.com/cell/fulltext/S0092-8674(20)30229-4
+- Open access with preprint (bonus link):
+  https://elifesciences.org/articles/98992
 - arXiv-backed CS paper on a publisher site:
   https://dl.acm.org/doi/10.1145/3442188.3445922
 
