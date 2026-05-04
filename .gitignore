@@ -2,6 +2,8 @@
 .Rhistory
 .Rapp.history
 node_modules/
+__pycache__/
+*.pyc
 *.log
 .vscode/
 .idea/
