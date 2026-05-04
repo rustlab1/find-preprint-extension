@@ -143,47 +143,75 @@ def make_store_icon():
     print(f"wrote {p.relative_to(ROOT)}")
 
 
+def fit_font(draw, text, max_w, max_h, start_size, bold=False):
+    """Return the largest font size at which the text fits the box."""
+    for fs in range(start_size, 8, -1):
+        f = find_font(fs, bold=bold)
+        bbox = draw.textbbox((0, 0), text, font=f)
+        if (bbox[2] - bbox[0]) <= max_w and (bbox[3] - bbox[1]) <= max_h:
+            return f, bbox
+    f = find_font(10, bold=bold)
+    return f, draw.textbbox((0, 0), text, font=f)
+
+
 def make_promo(width, height, name):
     img = Image.new("RGB", (width, height), (245, 248, 252))
-    # Gentle gradient.
+    # Gentle gradient (top blue-ish, bottom white).
     grad = Image.new("RGB", (1, height), 0)
     for y in range(height):
         t = y / max(height - 1, 1)
-        # very subtle blue tint top to white bottom
         r = int(245 + (255 - 245) * t)
         g = int(248 + (255 - 248) * t)
         b = int(252 + (255 - 252) * t)
         grad.putpixel((0, y), (r, g, b))
     img.paste(grad.resize((width, height)))
 
-    # Icon on the left (same clean P used in the store icon).
-    icon_size = int(height * 0.62)
+    d = ImageDraw.Draw(img)
+
+    # Icon on the left, sized as a fraction of the shortest axis so the
+    # layout works for both promo sizes.
+    icon_size = int(height * 0.58)
     icon = draw_p_icon(icon_size).convert("RGBA")
-    icon_x = int(height * 0.16)
+    margin = int(min(width, height) * 0.08)
+    icon_x = margin
     icon_y = (height - icon_size) // 2
     img.paste(icon, (icon_x, icon_y), icon)
 
-    # Text on the right.
-    d = ImageDraw.Draw(img)
-    title_size = int(height * 0.20)
-    sub_size = int(height * 0.10)
-    title_font = find_font(title_size, bold=True)
-    sub_font = find_font(sub_size)
+    # Text area: from end of icon + gap, to right margin.
+    text_x = icon_x + icon_size + int(min(width, height) * 0.08)
+    text_max_w = width - text_x - margin
+    title = "Find Preprint"
+    subtitle = "Free preprint of any paywalled paper"
 
-    text_x = icon_x + icon_size + int(height * 0.12)
-    title_y = int(height * 0.30)
-    d.text((text_x, title_y), "Find Preprint", font=title_font, fill=(20, 30, 50))
-    sub_y = title_y + int(title_size * 1.15)
-    d.text(
-        (text_x, sub_y),
-        "Free preprint version of any paywalled paper",
-        font=sub_font,
-        fill=(80, 95, 120),
+    # Two-line layout: title takes ~55% of vertical text space.
+    title_max_h = int(height * 0.32)
+    sub_max_h = int(height * 0.18)
+
+    title_font, title_bbox = fit_font(
+        d, title, text_max_w, title_max_h, start_size=int(height * 0.30), bold=True
     )
+    sub_font, sub_bbox = fit_font(
+        d, subtitle, text_max_w, sub_max_h, start_size=int(height * 0.14), bold=False
+    )
+
+    title_w = title_bbox[2] - title_bbox[0]
+    title_h = title_bbox[3] - title_bbox[1]
+    sub_w = sub_bbox[2] - sub_bbox[0]
+    sub_h = sub_bbox[3] - sub_bbox[1]
+
+    gap = int(height * 0.04)
+    block_h = title_h + gap + sub_h
+    block_top = (height - block_h) // 2
+
+    title_y = block_top - title_bbox[1]
+    sub_y = block_top + title_h + gap - sub_bbox[1]
+
+    d.text((text_x - title_bbox[0], title_y), title, font=title_font, fill=(20, 30, 50))
+    d.text((text_x - sub_bbox[0], sub_y), subtitle, font=sub_font, fill=(80, 95, 120))
 
     p = OUT / name
     img.save(p, "PNG", optimize=True)
-    print(f"wrote {p.relative_to(ROOT)} ({width}x{height})")
+    print(f"wrote {p.relative_to(ROOT)} ({width}x{height})  title={title_font.size}px sub={sub_font.size}px")
 
 
 if __name__ == "__main__":
