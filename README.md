@@ -1,0 +1,126 @@
+# Find Preprint
+
+Chrome extension that detects whether a journal article you're viewing is open
+access, and if not, finds a freely available preprint version (bioRxiv,
+medRxiv, arXiv, ChemRxiv, Research Square, etc.).
+
+## How it works
+
+1. A content script extracts the article's DOI from page metadata.
+2. The service worker queries an API chain in order of confidence:
+   1. **Unpaywall** — OA status + any preprint URLs in `oa_locations`.
+   2. **Crossref** — `is-preprint-of` / `has-preprint` relations.
+   3. **bioRxiv / medRxiv** — direct published-DOI to preprint-DOI lookup.
+   4. **Europe PMC** — `fullTextUrlList` and preprint comment-correction links
+      (resolves `PPR####` internal ids to the real preprint DOI).
+   5. **Semantic Scholar** — surfaces ArXiv ids when present.
+   6. **Title fuzzy search** — Crossref `posted-content` filter, only accepted
+      at Jaccard similarity > 0.85, marked "likely match".
+3. Results are cached in IndexedDB for 30 days, keyed by DOI.
+4. The extension badge shows OA / PP / 🔒 based on the result.
+5. If the page is paywalled and a preprint was found, a slim banner is
+   injected at the top of the page (dismissible per-domain for 30 days).
+
+### Flow
+
+```mermaid
+flowchart TD
+    A[Journal article page] --> B[Content script extracts DOI<br/>meta tags / JSON-LD / URL / text]
+    B -- no DOI/title --> Z[Do nothing]
+    B --> C[Service worker]
+    C --> D{IndexedDB cache hit?}
+    D -- yes --> R[Return cached result]
+    D -- no --> E[Unpaywall<br/>OA status + preprint URLs]
+    E --> F[Crossref<br/>relation: is-preprint-of]
+    F --> G[bioRxiv / medRxiv<br/>published DOI to preprint DOI]
+    G --> H[Europe PMC<br/>commentCorrectionList<br/>resolve PPR id to DOI]
+    H --> I[Semantic Scholar<br/>externalIds.ArXiv]
+    I --> J{Preprint found<br/>in any source?}
+    J -- yes --> K[Pick highest-trust source<br/>cache + return]
+    J -- no --> L[Title fuzzy search<br/>Crossref posted-content<br/>Jaccard > 0.85]
+    L --> K
+    K --> M[Set badge<br/>OA / PP / 🔒]
+    M --> N{Paywalled AND<br/>preprint found AND<br/>banner enabled?}
+    N -- yes --> O[Inject in-page banner<br/>dismissible 30 days/domain]
+    N -- no --> P[Done]
+    M --> Q[Popup reads result<br/>from chrome.storage.session]
+```
+
+### Badge states
+
+| Badge | Meaning |
+| --- | --- |
+| `OA` (green) | Open access — no paywall |
+| `PP` (blue) | Paywalled, preprint found |
+| `🔒` (red) | Paywalled, no preprint found |
+| empty | No article detected on this page |
+
+## Install (developer mode)
+
+1. Open `chrome://extensions`.
+2. Enable "Developer mode" (top right).
+3. Click "Load unpacked" and select this folder.
+4. The Find Preprint icon should appear in the toolbar.
+
+## Test pages to try
+
+Open these and watch the badge:
+
+- Paywalled, preprint exists on bioRxiv:
+  https://www.nature.com/articles/s41586-020-2008-3
+- Open access:
+  https://elifesciences.org/articles/76577
+- Cell paper with bioRxiv preprint:
+  https://www.cell.com/cell/fulltext/S0092-8674(20)30229-4
+- arXiv-backed CS paper on a publisher site:
+  https://dl.acm.org/doi/10.1145/3442188.3445922
+
+## Settings
+
+Click the extension icon, then "Settings", or right-click the icon ->
+"Options".
+
+- **Unpaywall email**: defaults to `rustbioconsulting@gmail.com`. Used as a
+  polite-pool contact only; not auth, no quota tied to it.
+- **Banner toggle**: on by default; banner only injects when the page is
+  paywalled AND a preprint was found.
+- **Clear cache**: empties the 30-day IndexedDB cache.
+- **Reset dismissed sites**: brings back banners on domains where you
+  clicked "X".
+
+## Privacy
+
+- Only the DOI (or title, on title-fallback) leaves the browser, and only on
+  pages where an article is detected.
+- Endpoints contacted: api.unpaywall.org, api.crossref.org, api.biorxiv.org,
+  www.ebi.ac.uk/europepmc, api.semanticscholar.org.
+- No analytics, no telemetry, no user identifier.
+
+## Layout
+
+```
+manifest.json
+src/
+  background.js          service worker, API chain, badge, per-tab result
+  content_script.js      DOI extraction + banner injection
+  popup.html/.css/.js    toolbar popup UI
+  options.html/.js       settings page
+  banner.css             injected banner styles
+  lib/
+    doi_extractor.js     meta-tag / JSON-LD / URL DOI extraction
+    cache.js             IndexedDB 30-day cache
+    preprint_hosts.js    known preprint server list + url classifier
+    api_unpaywall.js
+    api_crossref.js
+    api_biorxiv.js
+    api_europepmc.js
+    api_semanticscholar.js
+    api_titlesearch.js
+icons/                   placeholder PP icons (replace before publish)
+```
+
+## Status
+
+v0.1 scaffold. Works end-to-end, but icons are placeholders and the
+extension hasn't been packaged for the Chrome Web Store yet.
+See `PLAN.md` for milestones M1–M7 and the done definition.

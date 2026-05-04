@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Find Preprint - Settings</title>
+    <link rel="stylesheet" href="popup.css" />
+    <style>
+      body { width: 460px; }
+      label { display: block; margin: 12px 0 4px; font-weight: 600; font-size: 12px; }
+      input[type="text"], input[type="email"] {
+        width: 100%; padding: 6px 8px; box-sizing: border-box;
+        border: 1px solid #ccc; border-radius: 4px; font-size: 13px;
+      }
+      .help { color: #666; font-size: 11px; margin-top: 4px; }
+      .row.actions { margin-top: 16px; }
+      #status { margin-left: 10px; color: #1e7d34; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <h2 style="margin: 0 0 12px 0; font-size: 16px;">Find Preprint - Settings</h2>
+
+      <label for="email">Unpaywall email</label>
+      <input id="email" type="email" placeholder="you@example.com" />
+      <div class="help">
+        Required by the Unpaywall API as a polite-pool contact. Not used for tracking.
+        It is sent to api.unpaywall.org with each lookup.
+      </div>
+
+      <label>
+        <input id="banner" type="checkbox" />
+        Show banner on paywalled pages when a preprint is found
+      </label>
+      <div class="help">
+        The banner only appears when the page is paywalled and a preprint exists.
+        Dismissing it hides the banner on that domain for 30 days.
+      </div>
+
+      <div class="row actions">
+        <button id="save" class="btn">Save</button>
+        <button id="clear-cache" class="btn secondary">Clear cache</button>
+        <button id="reset-dismissed" class="btn secondary">Reset dismissed sites</button>
+        <span id="status"></span>
+      </div>
+    </div>
+    <script src="options.js"></script>
+  </body>
+</html>
