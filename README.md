@@ -25,9 +25,14 @@ medRxiv, arXiv, ChemRxiv, Research Square, etc.).
 
 ```mermaid
 flowchart TD
-    A[Journal article page] --> B[Extract DOI from page<br/>meta tags / JSON-LD / URL]
-    B --> C[Query API chain<br/>Unpaywall · Crossref · bioRxiv · Europe PMC · Semantic Scholar · title fallback]
-    C --> D[Show result<br/>badge OA / PP / 🔒 · popup · optional banner]
+    A[Journal article page] --> B[Extract DOI from page]
+    B --> C[Unpaywall<br/>OA status]
+    B --> D[Crossref · bioRxiv · Europe PMC · Semantic Scholar<br/>find preprint]
+    C --> E{Outcome}
+    D --> E
+    E -- Open access --> F[🟢 OA badge<br/>popup: 'open access']
+    E -- Paywalled<br/>+ preprint found --> G[🔵 PP badge<br/>popup with preprint link<br/>banner injected]
+    E -- Paywalled<br/>+ no preprint --> H[🔴 🔒 badge<br/>popup: 'no preprint found']
 ```
 
 ### Badge states
