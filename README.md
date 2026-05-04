@@ -25,25 +25,9 @@ medRxiv, arXiv, ChemRxiv, Research Square, etc.).
 
 ```mermaid
 flowchart TD
-    A[Journal article page] --> B[Content script extracts DOI<br/>meta tags / JSON-LD / URL / text]
-    B -- no DOI/title --> Z[Do nothing]
-    B --> C[Service worker]
-    C --> D{IndexedDB cache hit?}
-    D -- yes --> R[Return cached result]
-    D -- no --> E[Unpaywall<br/>OA status + preprint URLs]
-    E --> F[Crossref<br/>relation: is-preprint-of]
-    F --> G[bioRxiv / medRxiv<br/>published DOI to preprint DOI]
-    G --> H[Europe PMC<br/>commentCorrectionList<br/>resolve PPR id to DOI]
-    H --> I[Semantic Scholar<br/>externalIds.ArXiv]
-    I --> J{Preprint found<br/>in any source?}
-    J -- yes --> K[Pick highest-trust source<br/>cache + return]
-    J -- no --> L[Title fuzzy search<br/>Crossref posted-content<br/>Jaccard > 0.85]
-    L --> K
-    K --> M[Set badge<br/>OA / PP / 🔒]
-    M --> N{Paywalled AND<br/>preprint found AND<br/>banner enabled?}
-    N -- yes --> O[Inject in-page banner<br/>dismissible 30 days/domain]
-    N -- no --> P[Done]
-    M --> Q[Popup reads result<br/>from chrome.storage.session]
+    A[Journal article page] --> B[Extract DOI from page<br/>meta tags / JSON-LD / URL]
+    B --> C[Query API chain<br/>Unpaywall · Crossref · bioRxiv · Europe PMC · Semantic Scholar · title fallback]
+    C --> D[Show result<br/>badge OA / PP / 🔒 · popup · optional banner]
 ```
 
 ### Badge states
