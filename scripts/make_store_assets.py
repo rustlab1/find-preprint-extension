@@ -104,8 +104,40 @@ def draw_icon(size, with_shadow=True):
     return out
 
 
+def draw_p_icon(size):
+    """Clean white capital 'P' centered on a blue rounded square.
+    Renders at 4x and downscales for clean anti-aliasing."""
+    s = size * 4
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    radius = int(s * 0.22)
+    d.rounded_rectangle([(0, 0), (s, s)], radius=radius, fill=BLUE)
+    # Find the largest font size at which "P" fits comfortably (~62% canvas).
+    font = None
+    for fs in range(int(s * 0.85), int(s * 0.4), -2):
+        f = find_font(fs, bold=True)
+        bbox = d.textbbox((0, 0), "P", font=f)
+        w = bbox[2] - bbox[0]
+        h = bbox[3] - bbox[1]
+        if w <= s * 0.62 and h <= s * 0.78:
+            font = f
+            text_w, text_h = w, h
+            text_off = (bbox[0], bbox[1])
+            break
+    if font is None:
+        font = find_font(int(s * 0.6), bold=True)
+        bbox = d.textbbox((0, 0), "P", font=font)
+        text_w = bbox[2] - bbox[0]
+        text_h = bbox[3] - bbox[1]
+        text_off = (bbox[0], bbox[1])
+    x = (s - text_w) // 2 - text_off[0]
+    y = (s - text_h) // 2 - text_off[1]
+    d.text((x, y), "P", font=font, fill=WHITE)
+    return img.resize((size, size), Image.LANCZOS)
+
+
 def make_store_icon():
-    icon = draw_icon(128, with_shadow=False)
+    icon = draw_p_icon(128)
     p = OUT / "icon_store_128.png"
     icon.save(p, "PNG", optimize=True)
     print(f"wrote {p.relative_to(ROOT)}")
@@ -124,9 +156,9 @@ def make_promo(width, height, name):
         grad.putpixel((0, y), (r, g, b))
     img.paste(grad.resize((width, height)))
 
-    # Icon on the left.
+    # Icon on the left (same clean P used in the store icon).
     icon_size = int(height * 0.62)
-    icon = draw_icon(icon_size, with_shadow=True).convert("RGBA")
+    icon = draw_p_icon(icon_size).convert("RGBA")
     icon_x = int(height * 0.16)
     icon_y = (height - icon_size) // 2
     img.paste(icon, (icon_x, icon_y), icon)
