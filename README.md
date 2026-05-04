@@ -55,8 +55,8 @@ flowchart TD
 
 Open these and watch the badge:
 
-- Paywalled, preprint exists on bioRxiv:
-  https://www.nature.com/articles/s41586-020-2008-3
+- Paywalled, preprint exists on Research Square:
+  https://www.nature.com/articles/s41593-026-02272-6
 - Open access:
   https://elifesciences.org/articles/76577
 - Cell paper with bioRxiv preprint:
