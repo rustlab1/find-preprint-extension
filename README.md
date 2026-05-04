@@ -44,12 +44,93 @@ flowchart TD
 | `🔒` (red) | Paywalled, no preprint found |
 | empty | No article detected on this page |
 
-## Install (developer mode)
+## Install in Chrome
 
-1. Open `chrome://extensions`.
-2. Enable "Developer mode" (top right).
-3. Click "Load unpacked" and select this folder.
-4. The Find Preprint icon should appear in the toolbar.
+The extension is not yet on the Chrome Web Store, so for now it has to be
+loaded manually. The process takes about a minute.
+
+### 1. Download the code
+
+The simplest path:
+
+1. On the [repo page](https://github.com/rustlab1/find-preprint-extension),
+   click the green **Code** button.
+2. Choose **Download ZIP**.
+3. Open your Downloads folder and **unzip** the file. You'll get a folder
+   named `find-preprint-extension-main` (or similar). Move it somewhere you
+   won't accidentally delete (e.g. `~/Documents/`). Chrome will need this
+   folder to stick around as long as the extension is installed.
+
+If you use `git`, you can `git clone https://github.com/rustlab1/find-preprint-extension.git` instead.
+
+### 2. Open Chrome's extensions page
+
+In a new Chrome tab, type `chrome://extensions` and press Enter. (You can also
+get there via the three-dot menu in the top right: **Extensions → Manage
+Extensions**.)
+
+### 3. Turn on Developer mode
+
+In the top-right corner of the extensions page, flip the **Developer mode**
+toggle to **on**. Three new buttons appear: *Load unpacked*, *Pack
+extension*, *Update*.
+
+> Developer mode is needed because the extension hasn't been published to the
+> Chrome Web Store yet. It's a standard step, not a security risk for code
+> you trust.
+
+### 4. Load the extension
+
+1. Click **Load unpacked**.
+2. In the file picker, navigate to and select the **unzipped folder** from
+   step 1. Pick the folder itself, not a file inside it. The folder you
+   choose must contain `manifest.json` directly.
+3. The Find Preprint card should now appear on the extensions page.
+
+### 5. Pin the icon (recommended)
+
+Chrome hides extension icons by default. To keep Find Preprint visible:
+
+1. Click the **puzzle-piece icon** to the right of the address bar.
+2. Find **Find Preprint** in the list.
+3. Click the **pin icon** next to it. The Find Preprint icon now stays in
+   the toolbar.
+
+### 6. Try it
+
+Open one of the [test pages](#test-pages-to-try) below. Within a second or
+two you should see the toolbar icon update with a small badge:
+
+- **OA** (green) → the article is open access
+- **PP** (blue) → paywalled, but a preprint was found
+- **🔒** (red) → paywalled and no preprint found
+- (no badge) → not an article page, or no DOI was detected
+
+Click the icon for details, or look for the slim banner at the top of
+paywalled pages where a preprint exists.
+
+### Updating the extension later
+
+When a new version is released:
+
+1. Re-download the ZIP from GitHub and **replace** the unzipped folder
+   (keeping the same path).
+2. Go back to `chrome://extensions` and click the **circular reload arrow**
+   on the Find Preprint card.
+
+If you used `git clone`, just run `git pull` in the folder, then click the
+reload arrow.
+
+### Troubleshooting
+
+- **"This extension may have been corrupted"**: Chrome shows this if any
+  file is missing. Re-download the ZIP, replace the folder, and reload.
+- **No icon appears in the toolbar**: see step 5 above (pin the icon).
+- **Icon is gray with no badge on a paper you know is paywalled**: the
+  page might not expose a DOI in its metadata, or the page hadn't finished
+  loading when the extension ran. Refresh the page once.
+- **Want to remove it**: on `chrome://extensions`, click **Remove** on the
+  Find Preprint card. Nothing else gets left behind.
 
 ## Test pages to try
 
