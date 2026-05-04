@@ -69,7 +69,7 @@ Open these and watch the badge:
 Click the extension icon, then "Settings", or right-click the icon ->
 "Options".
 
-- **Unpaywall email**: defaults to `rustbioconsulting@gmail.com`. Used as a
+- **Unpaywall email**: defaults to `find.the.preprint@gmail.com`. Used as a
   polite-pool contact only; not auth, no quota tied to it.
 - **Banner toggle**: on by default; banner only injects when the page is
   paywalled AND a preprint was found.

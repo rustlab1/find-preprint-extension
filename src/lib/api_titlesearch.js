@@ -7,7 +7,7 @@
 
 import { classifyHost } from "./preprint_hosts.js";
 
-const POLITE_MAILTO = "rustbioconsulting@gmail.com";
+const POLITE_MAILTO = "find.the.preprint@gmail.com";
 
 function normalize(s) {
   return String(s || "")

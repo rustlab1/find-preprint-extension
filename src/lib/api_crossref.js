@@ -5,7 +5,7 @@
 
 import { classifyHost } from "./preprint_hosts.js";
 
-const POLITE_MAILTO = "rustbioconsulting@gmail.com";
+const POLITE_MAILTO = "find.the.preprint@gmail.com";
 
 function isValidDoi(s) {
   return /^10\.\d{4,9}\/[^\s]+$/i.test(String(s || ""));

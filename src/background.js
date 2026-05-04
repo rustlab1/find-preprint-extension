@@ -11,7 +11,7 @@ import { lookupSemanticScholar } from "./lib/api_semanticscholar.js";
 import { lookupTitleSearch } from "./lib/api_titlesearch.js";
 import { classifyHost } from "./lib/preprint_hosts.js";
 
-const DEFAULT_EMAIL = "rustbioconsulting@gmail.com";
+const DEFAULT_EMAIL = "find.the.preprint@gmail.com";
 
 async function getOptions() {
   const o = await chrome.storage.sync.get({

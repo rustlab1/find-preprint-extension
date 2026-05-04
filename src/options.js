@@ -1,5 +1,5 @@
 const DEFAULTS = {
-  email: "rustbioconsulting@gmail.com",
+  email: "find.the.preprint@gmail.com",
   bannerEnabled: true,
 };
 
